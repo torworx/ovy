@@ -1,0 +1,30 @@
+{
+    "name": "oxygen",
+    "description": "A fast, elegant, powerful, and cross platform JavaScript OOP library. Support singleton, super call, private, mixins and more.",
+    "version": "0.1.0",
+    "homepage": "https://github.com/torworx/oxygen",
+    "repository": "git://github.com/torworx/oxygen.git",
+    "author": "Yuan Tao <torworx@gmail.com>",
+    "private": false,
+    "main": "oxygen",
+    "keywords": [
+        "oxygen",
+        "Oxygen",
+        "OOP",
+        "JavaScript OOP",
+        "JavaScript Object Oriented Programming",
+        "AOP",
+        "Aspect Oriented Programming",
+        "class",
+        "define",
+        "extend",
+        "object-oriented",
+        "inheritance"
+    ],
+    "devDependencies": {
+        "mocha": "*",
+        "benchmark": "*",
+        "microtime": "*",
+        "jsface": "*"
+    }
+}
