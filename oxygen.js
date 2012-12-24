@@ -185,10 +185,20 @@
             return extend(Parent, data);
         }
 
+        function makeCtor(parent) {
+            if (parent.constructor === Object) {
+                return function(){};
+            } else {
+                return function() {
+                    parent.constructor.apply(this, arguments);
+                }
+            }
+        }
+
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
                 body = (Oxy.isFunction(data) ? data(parentClass, parent) : data) || {},
-                cls = Oxy.isFunction(body) ? body : (body.hasOwnProperty('constructor') ? body.constructor : function(){}),
+                cls = Oxy.isFunction(body) ? body : (body.hasOwnProperty('constructor') ? body.constructor : makeCtor(parent)),
                 prototype = cls.prototype,
                 key;
 
