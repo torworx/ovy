@@ -162,24 +162,18 @@
             }
         });
 
-        var ALL_RESERVED_KEYS = Oxy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
+//        var ALL_RESERVED_KEYS = Oxy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
 
         function Base() {
         };
-
-        function chain(object) {
-            var F = function () {
-            };
-            F.prototype = object;
-            return new F();
-        }
 
         function define(className, data) {
             var hasClassName = Oxy.isString(className);
             if (!data) data = (hasClassName ? {} : className) || {};
 
-            // null to override new class's $classname to avoid parent $classname has been inherited.
-            data.$classname = className;
+            if (className) {
+                data.$classname = className;
+            }
 
             var _extend = data.extend,
                 Parent;
@@ -193,12 +187,14 @@
 
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
-                prototype = chain(parent),
-                body = (Oxy.isFunction(data) ? data(prototype, parentClass, parent) : data) || {},
-                cls = Oxy.isFunction(body) ? body : (body.hasOwnProperty('constructor') ? body.constructor : function(){});
+                body = (Oxy.isFunction(data) ? data(parentClass, parent) : data) || {},
+                cls = Oxy.isFunction(body) ? body : (body.hasOwnProperty('constructor') ? body.constructor : function(){}),
+                prototype = cls.prototype,
+                key;
 
-            prototype.constructor = cls;
-            cls.prototype = prototype;
+            for (key in parent) {
+                if (!CLASS_RESERVED_KEYS[key]) {prototype[key] = parent[key]}
+            }
 
             // the '$super' property of class refers to its super prototype
             cls.$super = parent;

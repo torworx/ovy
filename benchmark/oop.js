@@ -23,7 +23,7 @@ var OxyChinaGuy = Oxy.define({
         OxyChinaGuy.$superclass.call(this, name)
     },
     setAddress: function(city, street) {
-        OxyChinaGuy.$super.setAddress('China', city, street);
+        OxyChinaGuy.$super.setAddress.call(this, 'China', city, street);
     }
 });
 
@@ -33,21 +33,10 @@ var OxyBeijingLover = Oxy.define({
         OxyBeijingLover.$superclass.call(this, name);
     },
     setAddress: function(street) {
-        OxyBeijingLover.$super.setAddress('Beijing', street);
+        OxyBeijingLover.$super.setAddress.call(this, 'Beijing', street);
     }
 });
 
-function test_oxygen_define() {
-
-    var p1 = new OxyPerson("John");
-    p1.setAddress("US", "MT", "CH");
-
-    var p2 = new OxyChinaGuy("Leo");
-    p2.setAddress("MT", "CH");
-
-    var p3 = new OxyBeijingLover("Mary");
-    p3.setAddress("CH");
-}
 //
 //
 //function test_oxygen_extend() {
@@ -175,24 +164,19 @@ var JSFaceParisLover = jsface.Class(JSFaceFrenchGuy, {
     }
 });
 
-function test_jsface() {
-
-    var p1 = new JSFacePerson("John");
-    p1.setAddress("US", "MT", "CH");
-
-    var p2 = new JSFaceFrenchGuy("Leo");
-    p2.setAddress("MT", "CH");
-
-    var p3 = new JSFaceParisLover("Mary");
-    p3.setAddress("CH");
-}
-
 // Run Benchmark
 (function () {
     // add tests
     suite
         .add('OxygenJS', function () {
-            test_oxygen_define();
+            var p1 = new OxyPerson("John");
+            p1.setAddress("US", "MT", "CH");
+
+            var p2 = new OxyChinaGuy("Leo");
+            p2.setAddress("MT", "CH");
+
+            var p3 = new OxyBeijingLover("Mary");
+            p3.setAddress("CH");
         })
 //        .add('OxygenJS extend', function () {
 //            test_oxygen_extend();
@@ -201,7 +185,14 @@ function test_jsface() {
 //            test_oxygen_extend_augment();
 //        })
         .add('JSFace', function () {
-            test_jsface();
+            var p1 = new JSFacePerson("John");
+            p1.setAddress("US", "MT", "CH");
+
+            var p2 = new JSFaceFrenchGuy("Leo");
+            p2.setAddress("MT", "CH");
+
+            var p3 = new JSFaceParisLover("Mary");
+            p3.setAddress("CH");
         })
 
         // add listeners
