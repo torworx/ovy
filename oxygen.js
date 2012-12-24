@@ -234,6 +234,10 @@
         function processInherits(targetClass, inherits, targetPrototype) {
             var i, ln;
 
+            if (!targetPrototype) {
+                targetPrototype = targetClass.prototype;
+            }
+
             if (inherits instanceof Array) {
                 for (i = 0, ln = inherits.length; i < ln; i++) {
                     mixin(targetClass, null, inherits[i], targetPrototype);
@@ -250,6 +254,10 @@
 
         function processMixins(targetClass, mixins, targetPrototype) {
             var name, item, i, ln;
+
+            if (!targetPrototype) {
+                targetPrototype = targetClass.prototype;
+            }
 
             if (mixins instanceof Array) {
                 for (i = 0, ln = mixins.length; i < ln; i++) {
@@ -300,10 +308,16 @@
             }
         }
 
-        // expose public functions
+        // expose oop functions
         Oxy.apply(Oxy, {
             define:define,
-            extend:extend
+            extend:extend,
+            mixin:function(targetClass, mixins) {
+                return processMixins(targetClass, mixins);
+            },
+            inherit:function(targetClass, inherits) {
+                return processInherits(targetClass, inherits);
+            }
         })
 
     }());
