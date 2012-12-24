@@ -131,151 +131,166 @@ it('define with private', function(){
 });
 
 it('define with mixins', function(){
-
-    var result = [];
-
-    var CanSing = Oxy.define({
-        sing: function(songName) {
-            result.push("I'm singing " + songName);
+    var Options = Oxy.define({
+        setOptions: function(opts) {
+            this.opts = opts;
         }
     });
 
-    var CanPlayGuitar = Oxy.define({
-        playGuitar: function() {
-            result.push("I'm playing guitar");
-            return result;
-        }
-    });
-
-    var CoolGuy = Oxy.define({
-        extend: Person,
-        mixins: {
-            canSing: CanSing,
-            canPlayGuitar: CanPlayGuitar
+    var Events = Oxy.define({
+        bind: function(event, fn) {
+            return true;
         },
-        sing: function() {
-            result.push("Attention!");
-            this.playGuitar();
-            // this.mixins is a special object holding references to all mixins' prototypes
-            this.mixins.canSing.sing.apply(this, arguments);
+        unbind: function(event, fn) {
+            return false;
         }
     });
 
-    var nicolas = new CoolGuy("Nicolas");
-    nicolas.sing("November Rain");
+    var Foo = Oxy.define({
+        constructor: function(name) {
+            this.name = name;
+        }
+    });
 
-    assert.equal(3, result.length);
-    assert.equal("Attention!", result[0]);
-    assert.equal("I'm playing guitar", result[1]);
-    assert.equal("I'm singing November Rain", result[2]);
+    var Bar = Oxy.define({
+        extend: Foo,
+        mixins: {
+            options: Options,
+            events: Events
+        },
+        setOptions: function(opts) {
+            this.config = opts;
+            this.mixins.options.setOptions.call(this, opts);
+        }
+    });
+
+
+    var bar = new Bar("Bar");
+    bar.setOptions("nothing");
+
+    assert.equal(bar.name, "Bar", "Invalid extend behavior, constructor must be bound correctly");
+    assert.equal(bar.opts, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.equal(bar.config, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.ok(bar.bind(), "Invalid mixins behavior");
+    assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
 });
 
 it('define with inherits', function() {
-
-    var result = [];
-
-    var CanSing = Oxy.define({
-        sing: function(songName) {
-            result.push("I'm singing " + songName);
-            return result
+    var Options = Oxy.define({
+        setOptions: function(opts) {
+            this.opts = opts;
         }
     });
 
-    var CanPlayGuitar = Oxy.define({
-        playGuitar: function() {
-            result.push("I'm playing guitar");
-            return result;
-        }
-    });
-
-    var CoolGuy = Oxy.define({
-        extend: Person,
-        inherits: {
-            canSing: CanSing,
-            canPlayGuitar: CanPlayGuitar
+    var Events = Oxy.define({
+        bind: function(event, fn) {
+            return true;
         },
-        // make sure different method name
-        play: function(songName) {
-            result.push("Attention!");
-            this.playGuitar();
-            this.sing(songName);
+        unbind: function(event, fn) {
+            return false;
         }
     });
 
-    var nicolas = new CoolGuy("Nicolas");
-    nicolas.play("November Rain");
+    var Foo = Oxy.define({
+        constructor: function(name) {
+            this.name = name;
+        }
+    });
 
-    assert.equal(3, result.length);
-    assert.equal("Attention!", result[0]);
-    assert.equal("I'm playing guitar", result[1]);
-    assert.equal("I'm singing November Rain", result[2]);
+    var Bar = Oxy.define({
+        extend: Foo,
+        inherits: [Options, Events]
+    });
+
+
+    var bar = new Bar("Bar");
+    bar.setOptions("nothing");
+
+    assert.equal(bar.name, "Bar", "Invalid extend behavior, constructor must be bound correctly");
+    assert.equal(bar.opts, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.ok(bar.bind(), "Invalid mixins behavior");
+    assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
 });
 
 it("mixins classes to a plain Class with Oxy.mixin", function(){
-    var result = [];
-
-    var CanSing = function(){};
-    CanSing.prototype.sing = function(songName) {
-        result.push("I'm singing " + songName);
-    }
-
-
-    var CanPlayGuitar = function(){};
-    CanPlayGuitar.prototype.playGuitar = function() {
-        result.push("I'm playing guitar");
-        return result;
-    }
-
-    var CoolGuy = function(){};
-    Oxy.mixins(CoolGuy, {
-        canSing: CanSing,
-        canPlayGuitar: CanPlayGuitar
+    var Options = Oxy.define({
+        setOptions: function(opts) {
+            this.opts = opts;
+        }
     });
-    CoolGuy.prototype.sing = function() {
-        result.push("Attention!");
-        this.playGuitar();
-        // this.mixins is a special object holding references to all mixins' prototypes
-        this.mixins.canSing.sing.apply(this, arguments);
-    }
 
-    var nicolas = new CoolGuy("Nicolas");
-    nicolas.sing("November Rain");
+    var Events = Oxy.define({
+        bind: function(event, fn) {
+            return true;
+        },
+        unbind: function(event, fn) {
+            return false;
+        }
+    });
 
-    assert.equal(3, result.length);
-    assert.equal("Attention!", result[0]);
-    assert.equal("I'm playing guitar", result[1]);
-    assert.equal("I'm singing November Rain", result[2]);
+    var Foo = Oxy.define({
+        constructor: function(name) {
+            this.name = name;
+        }
+    });
+
+    var Bar = Oxy.define({
+        extend: Foo,
+        setOptions: function(opts) {
+            this.config = opts;
+            this.mixins.options.setOptions.call(this, opts);
+        }
+    });
+
+    Oxy.mixins(Bar, {
+        options: Options,
+        events: Events
+    });
+
+    var bar = new Bar("Bar");
+    bar.setOptions("nothing");
+
+    assert.equal(bar.name, "Bar", "Invalid extend behavior, constructor must be bound correctly");
+    assert.equal(bar.opts, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.equal(bar.config, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.ok(bar.bind(), "Invalid mixins behavior");
+    assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
 });
 
 
 it("inherits classes to a plain Class with Oxy.inherit", function(){
-    var result = [];
+    var Options = Oxy.define({
+        setOptions: function(opts) {
+            this.opts = opts;
+        }
+    });
 
-    var CanSing = function(){};
-    CanSing.prototype.sing = function(songName) {
-        result.push("I'm singing " + songName);
-    }
+    var Events = Oxy.define({
+        bind: function(event, fn) {
+            return true;
+        },
+        unbind: function(event, fn) {
+            return false;
+        }
+    });
 
+    var Foo = Oxy.define({
+        constructor: function(name) {
+            this.name = name;
+        }
+    });
 
-    var CanPlayGuitar = function(){};
-    CanPlayGuitar.prototype.playGuitar = function() {
-        result.push("I'm playing guitar");
-        return result;
-    }
+    var Bar = Oxy.define({
+        extend: Foo
+    });
 
-    var CoolGuy = function(){};
-    Oxy.inherits(CoolGuy, [CanSing, CanPlayGuitar]);
-    CoolGuy.prototype.play = function(songName) {
-        result.push("Attention!");
-        this.playGuitar();
-        this.sing(songName);
-    }
+    Oxy.inherits(Bar, [Options, Events]);
 
-    var nicolas = new CoolGuy("Nicolas");
-    nicolas.play("November Rain");
+    var bar = new Bar("Bar");
+    bar.setOptions("nothing");
 
-    assert.equal(3, result.length);
-    assert.equal("Attention!", result[0]);
-    assert.equal("I'm playing guitar", result[1]);
-    assert.equal("I'm singing November Rain", result[2]);
+    assert.equal(bar.name, "Bar", "Invalid extend behavior, constructor must be bound correctly");
+    assert.equal(bar.opts, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
+    assert.ok(bar.bind(), "Invalid mixins behavior");
+    assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
 });

@@ -6,7 +6,7 @@
             objectPrototype = Object.prototype,
             toString = objectPrototype.toString,
             CLASS_RESERVED_KEYS = {$classname:1, mixinId:1, $mixinId:1, $super:1, $superclass:1},
-            CONFIG_RESERVED_KEYS = {constructor:1, singleton:1, statics:1, mixins:1, inherits:1};
+            CONFIG_RESERVED_KEYS = {extend:1, constructor:1, singleton:1, statics:1, mixins:1, inherits:1};
 
         function getAutoId(prefiex) {
             return (prefiex ? prefiex.toString() : '') + (++AUTO_ID);
