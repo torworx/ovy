@@ -30,7 +30,7 @@ it('define a class', function(){
     assert.equal(a.m("s"), "s");
 });
 
-it('extend class', function(){
+it('define with extend', function(){
 
     // OxygenJS Define
     var OxyPerson = Oxy.define({
@@ -50,7 +50,7 @@ it('extend class', function(){
             OxyChinaGuy.$superclass.call(this, name)
         },
         setAddress: function(city, street) {
-            OxyChinaGuy.$super.setAddress('China', city, street);
+            OxyChinaGuy.$super.setAddress.call(this, 'China', city, street);
         }
     });
 
@@ -60,7 +60,7 @@ it('extend class', function(){
             OxyBeijingLover.$superclass.call(this, name);
         },
         setAddress: function(street) {
-            OxyBeijingLover.$super.setAddress('Beijing', street);
+            OxyBeijingLover.$super.setAddress.call(this, 'Beijing', street);
         }
     });
 
@@ -87,7 +87,7 @@ it('extend class', function(){
     assert.equal('XY', p3.street);
 });
 
-it('statics', function(){
+it('define with statics', function(){
     var A = Oxy.define({
        statics: {
            f: 1,
@@ -100,7 +100,7 @@ it('statics', function(){
     assert.equal('Hello World', A.echo('Hello World'));
 });
 
-it('singleton', function(){
+it('define as singleton', function(){
     var A = Oxy.define({
         singleton: true,
         f: 1
@@ -108,7 +108,7 @@ it('singleton', function(){
     assert.equal(1, A.f);
 });
 
-it('private', function(){
+it('define with private', function(){
     var Person = Oxy.define((function(){
         var MIN_AGE =   1,                             // private variables
             MAX_AGE = 150;
@@ -130,7 +130,7 @@ it('private', function(){
     })());
 });
 
-it('mixins', function(){
+it('define with mixins', function(){
 
     var result = [];
 
@@ -170,7 +170,7 @@ it('mixins', function(){
     assert.equal("I'm singing November Rain", result[2]);
 });
 
-it('inherits', function() {
+it('define with inherits', function() {
 
     var result = [];
 
@@ -201,6 +201,75 @@ it('inherits', function() {
             this.sing(songName);
         }
     });
+
+    var nicolas = new CoolGuy("Nicolas");
+    nicolas.play("November Rain");
+
+    assert.equal(3, result.length);
+    assert.equal("Attention!", result[0]);
+    assert.equal("I'm playing guitar", result[1]);
+    assert.equal("I'm singing November Rain", result[2]);
+});
+
+it("mixins classes to a plain Class with Oxy.mixin", function(){
+    var result = [];
+
+    var CanSing = function(){};
+    CanSing.prototype.sing = function(songName) {
+        result.push("I'm singing " + songName);
+    }
+
+
+    var CanPlayGuitar = function(){};
+    CanPlayGuitar.prototype.playGuitar = function() {
+        result.push("I'm playing guitar");
+        return result;
+    }
+
+    var CoolGuy = function(){};
+    Oxy.mixins(CoolGuy, {
+        canSing: CanSing,
+        canPlayGuitar: CanPlayGuitar
+    });
+    CoolGuy.prototype.sing = function() {
+        result.push("Attention!");
+        this.playGuitar();
+        // this.mixins is a special object holding references to all mixins' prototypes
+        this.mixins.canSing.sing.apply(this, arguments);
+    }
+
+    var nicolas = new CoolGuy("Nicolas");
+    nicolas.sing("November Rain");
+
+    assert.equal(3, result.length);
+    assert.equal("Attention!", result[0]);
+    assert.equal("I'm playing guitar", result[1]);
+    assert.equal("I'm singing November Rain", result[2]);
+});
+
+
+it("inherits classes to a plain Class with Oxy.inherit", function(){
+    var result = [];
+
+    var CanSing = function(){};
+    CanSing.prototype.sing = function(songName) {
+        result.push("I'm singing " + songName);
+    }
+
+
+    var CanPlayGuitar = function(){};
+    CanPlayGuitar.prototype.playGuitar = function() {
+        result.push("I'm playing guitar");
+        return result;
+    }
+
+    var CoolGuy = function(){};
+    Oxy.inherits(CoolGuy, [CanSing, CanPlayGuitar]);
+    CoolGuy.prototype.play = function(songName) {
+        result.push("Attention!");
+        this.playGuitar();
+        this.sing(songName);
+    }
 
     var nicolas = new CoolGuy("Nicolas");
     nicolas.play("November Rain");

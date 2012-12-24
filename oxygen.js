@@ -312,10 +312,10 @@
         Oxy.apply(Oxy, {
             define:define,
             extend:extend,
-            mixin:function(targetClass, mixins) {
+            mixins:function(targetClass, mixins) {
                 return processMixins(targetClass, mixins);
             },
-            inherit:function(targetClass, inherits) {
+            inherits:function(targetClass, inherits) {
                 return processInherits(targetClass, inherits);
             }
         })
