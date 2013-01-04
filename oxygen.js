@@ -6,7 +6,8 @@
             objectPrototype = Object.prototype,
             toString = objectPrototype.toString,
             CLASS_RESERVED_KEYS = {$classname:1, mixinId:1, $mixinId:1, $super:1, $superclass:1},
-            CONFIG_RESERVED_KEYS = {extend:1, constructor:1, singleton:1, statics:1, mixins:1, inherits:1};
+            CONFIG_RESERVED_KEYS = {extend:1, constructor:1, singleton:1, statics:1, mixins:1, inherits:1},
+            TemplateClass = function(){};
 
         function getAutoId(prefiex) {
             return (prefiex ? prefiex.toString() : '') + (++AUTO_ID);
@@ -159,13 +160,20 @@
                 }
 
                 return clone || item;
+            },
+
+            chain: function (object) {
+                TemplateClass.prototype = object;
+                var result = new TemplateClass();
+                TemplateClass.prototype = null;
+                return result;
             }
         });
 
 //        var ALL_RESERVED_KEYS = Oxy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
 
         function Base() {
-        };
+        }
 
         function define(className, data) {
             var hasClassName = Oxy.isString(className);
@@ -173,6 +181,8 @@
 
             if (className) {
                 data.$classname = className;
+            } else {
+                data.$classname = null;
             }
 
             var _extend = data.extend,
@@ -197,14 +207,20 @@
 
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
+                prototype = Oxy.chain(parent),
                 body = (Oxy.isFunction(data) ? data(parentClass, parent) : data) || {},
-                cls = Oxy.isFunction(body) ? body : (body.hasOwnProperty('constructor') ? body.constructor : makeCtor(parent)),
-                prototype = cls.prototype,
-                key;
+                cls;
 
-            for (key in parent) {
-                if (!CLASS_RESERVED_KEYS[key]) {prototype[key] = parent[key]}
+            if (Oxy.isFunction(body)) {
+                cls = body;
+            } else if (body.constructor !== Object) {
+                cls = body.constructor;
+            } else {
+                cls = makeCtor(parent);
             }
+
+            prototype.constructor = cls;
+            cls.prototype = prototype;
 
             // the '$super' property of class refers to its super prototype
             cls.$super = parent;
@@ -238,7 +254,12 @@
             if (inherits) {
                 processInherits(targetClass, inherits, targetPrototype);
             }
+
             Oxy.apply(prototype, data, CONFIG_RESERVED_KEYS);
+
+            if (data.toString !== Object.prototype.toString) {
+                prototype.toString = data.toString;
+            }
         }
 
         function processInherits(targetClass, inherits, targetPrototype) {

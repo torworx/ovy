@@ -85,6 +85,11 @@ it('define with extend', function(){
     assert.equal('China', p3.country);
     assert.equal('Beijing', p3.city);
     assert.equal('XY', p3.street);
+
+    var instanceofTest = p3 instanceof OxyBeijingLover &&
+        p3 instanceof OxyChinaGuy &&
+        p3 instanceof OxyPerson;
+    assert.ok(instanceofTest, 'failed the `instanceof` test.');
 });
 
 it('define with statics', function(){
