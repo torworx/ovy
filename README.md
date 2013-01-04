@@ -1,4 +1,4 @@
-# OxygenJS <sup>v0.1.0</sup>
+# OxygenJS <sup>v0.1.2</sup>
 
 A fast, elegant, powerful, and cross platform JavaScript OOP library. Support statics, singleton, super call, private, mixins, inherits and more.
 
