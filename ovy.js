@@ -1,6 +1,7 @@
+//noinspection ThisExpressionReferencesGlobalObjectJS
 (function (context) {
 
-    var Oxy = {};
+    var Ovy = {};
     (function () {
         var AUTO_ID = 1000,
             objectPrototype = Object.prototype,
@@ -13,7 +14,7 @@
             return (prefiex ? prefiex.toString() : '') + (++AUTO_ID);
         }
 
-        Oxy.apply = function (object, config, filter) {
+        Ovy.apply = function (object, config, filter) {
             if (object && config && typeof config === 'object') {
                 var key;
 
@@ -26,10 +27,10 @@
             return object;
         };
 
-        Oxy.apply(Oxy, {
+        Ovy.apply(Ovy, {
 
             isEmpty:function (value, allowEmptyString) {
-                return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (Oxy.isArray(value) && value.length === 0);
+                return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (Ovy.isArray(value) && value.length === 0);
             },
 
             isArray:('isArray' in Array) ? Array.isArray : function (value) {
@@ -75,7 +76,7 @@
             }
         });
 
-        Oxy.apply(Oxy, {
+        Ovy.apply(Ovy, {
 
             applyIf:function (object, config, filter) {
                 var property;
@@ -96,8 +97,8 @@
             merge:function (destination) {
                 var i = 1,
                     ln = arguments.length,
-                    mergeFn = Oxy.merge,
-                    cloneFn = Oxy.clone,
+                    mergeFn = Ovy.merge,
+                    cloneFn = Ovy.clone,
                     object, key, value, sourceKey;
 
                 for (; i < ln; i++) {
@@ -147,7 +148,7 @@
                     clone = [];
 
                     while (i--) {
-                        clone[i] = Oxy.clone(item[i]);
+                        clone[i] = Ovy.clone(item[i]);
                     }
                 }
                 // Object
@@ -155,7 +156,7 @@
                     clone = {};
 
                     for (key in item) {
-                        clone[key] = Oxy.clone(item[key]);
+                        clone[key] = Ovy.clone(item[key]);
                     }
                 }
 
@@ -170,13 +171,13 @@
             }
         });
 
-//        var ALL_RESERVED_KEYS = Oxy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
+//        var ALL_RESERVED_KEYS = Ovy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
 
         function Base() {
         }
 
         function define(className, data) {
-            var hasClassName = Oxy.isString(className);
+            var hasClassName = Ovy.isString(className);
             if (!data) data = (hasClassName ? {} : className) || {};
 
             if (className) {
@@ -187,7 +188,7 @@
 
             var _extend = data.extend,
                 Parent;
-            if (_extend && !Oxy.isObject(_extend)) {
+            if (_extend && !Ovy.isObject(_extend)) {
                 Parent = _extend;
             } else {
                 Parent = Base;
@@ -207,11 +208,11 @@
 
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
-                prototype = Oxy.chain(parent),
-                body = (Oxy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
+                prototype = Ovy.chain(parent),
+                body = (Ovy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
                 cls;
 
-            if (Oxy.isFunction(body)) {
+            if (Ovy.isFunction(body)) {
                 cls = body;
             } else if (body.constructor !== Object) {
                 cls = body.constructor;
@@ -246,7 +247,7 @@
 
             if (statics) {
                 // copy static properties from statics to class
-                Oxy.apply(targetClass, statics);
+                Ovy.apply(targetClass, statics);
             }
             if (mixins) {
                 processMixins(targetClass, mixins, targetPrototype)
@@ -255,7 +256,7 @@
                 processInherits(targetClass, inherits, targetPrototype);
             }
 
-            Oxy.apply(prototype, data, CONFIG_RESERVED_KEYS);
+            Ovy.apply(prototype, data, CONFIG_RESERVED_KEYS);
 
             if (data.toString !== Object.prototype.toString) {
                 prototype.toString = data.toString;
@@ -318,7 +319,7 @@
             if (name) {
                 if (!prototype.hasOwnProperty('mixins')) {
                     if ('mixins' in prototype) {
-                        prototype.mixins = Oxy.chain(prototype.mixins);
+                        prototype.mixins = Ovy.chain(prototype.mixins);
                     }
                     else {
                         prototype.mixins = {};
@@ -328,7 +329,7 @@
 
             for (key in mixin) {
                 if (name && (key === 'mixins')) {
-                    Oxy.merge(prototype.mixins, mixin[key]);
+                    Ovy.merge(prototype.mixins, mixin[key]);
                 }
                 else if (typeof prototype[key] == 'undefined' && key != 'mixinId') {
                     prototype[key] = mixin[key];
@@ -340,7 +341,7 @@
         }
 
         // expose oop functions
-        Oxy.apply(Oxy, {
+        Ovy.apply(Ovy, {
             define:define,
             extend:extend,
             mixins:function(targetClass, mixins) {
@@ -354,15 +355,15 @@
     }());
 
     if (typeof module !== "undefined" && module.exports) {              // NodeJS/CommonJS
-        module.exports = Oxy;
+        module.exports = Ovy;
     } else {
-        var _Oxy = context.Oxy;                                         // save current Class namespace
-        context.Oxy = Oxy;                                              // bind Class and Oxygen to global scope
-        Oxy.noConflict = function () {
-            if (context.Oxy === Oxy) {
-                context.Oxy = _Oxy;
+        var _Ovy = context.Ovy;                                         // save current Class namespace
+        context.Ovy = Ovy;                                              // bind Class and Ovy to global scope
+        Ovy.noConflict = function () {
+            if (context.Ovy === Ovy) {
+                context.Ovy = _Ovy;
             }
-            return Oxy;
+            return Ovy;
         }
     }
 

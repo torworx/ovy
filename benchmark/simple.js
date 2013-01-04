@@ -1,13 +1,13 @@
 var Benchmark = require('benchmark').Benchmark;
-var Oxy = require('../oxygen');
+var Ovy = require('../ovy');
 var jsface = require('jsface');
 
 
 var suite = new Benchmark.Suite('benchmark');
 
 
-function test_oxygen() {
-    var Person = Oxy.define('Person', {
+function test_ovy() {
+    var Person = Ovy.define('Person', {
         name: {type: String},
         email: {type: String},
         age: {type: Number},
@@ -20,7 +20,7 @@ function test_oxygen() {
 function test_javascript() {
     var Person = function() {
         this.$classname = 'Person';
-    }
+    };
     Person.prototype.name = {type: String};
     Person.prototype.email = {type: String};
     Person.prototype.age = {type: Number};
@@ -42,8 +42,8 @@ function test_jsface() {
 (function () {
     // add tests
     suite
-        .add('OxygenJS', function () {
-            test_oxygen();
+        .add('OvyJS', function () {
+            test_ovy();
         })
         .add('JSFace', function () {
             test_jsface();

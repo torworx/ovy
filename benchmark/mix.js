@@ -1,4 +1,4 @@
-var Oxy = require('../oxygen');
+var Ovy = require('../ovy');
 var jsface = require('jsface');
 require('./lib/augment');
 
@@ -7,24 +7,24 @@ var suite = new Benchmark.Suite('benchmark');
 
 var Person = function(name) {
     this.name = name;
-}
+};
 
-// Oxygen Inherits Define
-var OxyInheritsCanSing = Oxy.define({
+// Ovy Inherits Define
+var OvyInheritsCanSing = Ovy.define({
     sing: function(songName) {
         //
     }
 });
 
-var OxyInheritsCanPlayGuitar = Oxy.define({
+var OvyInheritsCanPlayGuitar = Ovy.define({
     playGuitar: function() {
         //
     }
 });
 
-var OxyInheritsCoolGuy = Oxy.define({
+var OvyInheritsCoolGuy = Ovy.define({
     extend: Person,
-    inherits: [OxyInheritsCanSing, OxyInheritsCanPlayGuitar],
+    inherits: [OvyInheritsCanSing, OvyInheritsCanPlayGuitar],
     // make sure different method name
     play: function(songName) {
         this.playGuitar();
@@ -32,24 +32,24 @@ var OxyInheritsCoolGuy = Oxy.define({
     }
 });
 
-// Oxygen Mixins Define
-var OxyMixinsCanSing = Oxy.define({
+// Ovy Mixins Define
+var OvyMixinsCanSing = Ovy.define({
     sing: function(songName) {
         //
     }
 });
 
-var OxyMixinsCanPlayGuitar = Oxy.define({
+var OvyMixinsCanPlayGuitar = Ovy.define({
     playGuitar: function() {
         //
     }
 });
 
-var OxyMixinsCoolGuy = Oxy.define({
+var OvyMixinsCoolGuy = Ovy.define({
     extend: Person,
     mixins: {
-        canSing: OxyMixinsCanSing,
-        canPlayGuitar: OxyMixinsCanPlayGuitar
+        canSing: OvyMixinsCanSing,
+        canPlayGuitar: OvyMixinsCanPlayGuitar
     },
     sing: function() {
         this.playGuitar();
@@ -79,13 +79,13 @@ var JSFaceCoolGuy = jsface.Class([Person, JSFaceCanSing, JSFaceCanPlayGuitar], {
     }
 });
 
-function test_oxygen_inherits() {
-    var nicolas = new OxyInheritsCoolGuy("Nicolas");
+function test_ovy_inherits() {
+    var nicolas = new OvyInheritsCoolGuy("Nicolas");
     nicolas.play("November Rain");
 }
 
-function test_oxygen_mixins() {
-    var nicolas = new OxyMixinsCoolGuy("Nicolas");
+function test_ovy_mixins() {
+    var nicolas = new OvyMixinsCoolGuy("Nicolas");
     nicolas.sing("November Rain");
 }
 
@@ -102,11 +102,11 @@ function test_jsface() {
         .add('JSFace', function () {
             test_jsface();
         })
-        .add('OxygenJS (mixins)', function () {
-            test_oxygen_mixins();
+        .add('OvyJS (mixins)', function () {
+            test_ovy_mixins();
         })
-        .add('OxygenJS (inherits)', function () {
-            test_oxygen_inherits();
+        .add('OvyJS (inherits)', function () {
+            test_ovy_inherits();
         })
         // add listeners
         .on('cycle', function (event) {

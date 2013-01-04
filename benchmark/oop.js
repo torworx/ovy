@@ -1,12 +1,12 @@
 var Benchmark = require('benchmark').Benchmark;
-var Oxy = require('../oxygen');
+var Ovy = require('../ovy');
 var jsface = require('jsface');
 
 
 var suite = new Benchmark.Suite('benchmark');
 
-// OxygenJS Define
-var OxyPerson = Oxy.define({
+// OvyJS Define
+var OvyPerson = Ovy.define({
     constructor: function(name) {
         this.name = name;
     },
@@ -17,30 +17,30 @@ var OxyPerson = Oxy.define({
     }
 });
 
-var OxyChinaGuy = Oxy.define({
-    extend: OxyPerson,
+var OvyChinaGuy = Ovy.define({
+    extend: OvyPerson,
     constructor: function(name) {
-        OxyChinaGuy.$superclass.call(this, name)
+        OvyChinaGuy.$superclass.call(this, name)
     },
     setAddress: function(city, street) {
-        OxyChinaGuy.$super.setAddress.call(this, 'China', city, street);
+        OvyChinaGuy.$super.setAddress.call(this, 'China', city, street);
     }
 });
 
-var OxyBeijingLover = Oxy.define({
-    extend: OxyChinaGuy,
+var OvyBeijingLover = Ovy.define({
+    extend: OvyChinaGuy,
     constructor: function(name) {
-        OxyBeijingLover.$superclass.call(this, name);
+        OvyBeijingLover.$superclass.call(this, name);
     },
     setAddress: function(street) {
-        OxyBeijingLover.$super.setAddress.call(this, 'Beijing', street);
+        OvyBeijingLover.$super.setAddress.call(this, 'Beijing', street);
     }
 });
 
 //
 //
-//function test_oxygen_extend() {
-//    var Person = Oxy.extend(function() {
+//function test_ovy_extend() {
+//    var Person = Ovy.extend(function() {
 //        return {
 //            constructor:function (name) {
 //                this.name = name;
@@ -53,7 +53,7 @@ var OxyBeijingLover = Oxy.define({
 //        }
 //    });
 //
-//    var ChinaGuy = Oxy.extend(Person, function(Person, parent) {
+//    var ChinaGuy = Ovy.extend(Person, function(Person, parent) {
 //        return {
 //            constructor:function () {
 //                Person.call(this)
@@ -64,7 +64,7 @@ var OxyBeijingLover = Oxy.define({
 //        }
 //    });
 //
-//    var BeiJingLover = Oxy.extend(ChinaGuy, function (ChinaGuy, parent) {
+//    var BeiJingLover = Ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
 //        return {
 //            constructor:function (name) {
 //                ChinaGuy.call(this, name);
@@ -86,8 +86,8 @@ var OxyBeijingLover = Oxy.define({
 //}
 
 //
-//function test_oxygen_extend_augment() {
-//    var Person = Oxy.extend(Object, function () {
+//function test_ovy_extend_augment() {
+//    var Person = Ovy.extend(Object, function () {
 //
 //        this.setAddress = function (country, city, street) {
 //            this.country = country;
@@ -102,7 +102,7 @@ var OxyBeijingLover = Oxy.define({
 //        }
 //    });
 //
-//    var ChinaGuy = Oxy.extend(Person, function (Person, parent) {
+//    var ChinaGuy = Ovy.extend(Person, function (Person, parent) {
 //
 //        this.setAddress = function (city, street) {
 //            parent.setAddress('China', city, street);
@@ -115,7 +115,7 @@ var OxyBeijingLover = Oxy.define({
 //        }
 //    });
 //
-//    var BeiJingLover = Oxy.extend(ChinaGuy, function (ChinaGuy, parent) {
+//    var BeiJingLover = Ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
 //        this.setAddress = function (street) {
 //            parent.setAddress('BeiJing', street);
 //        }
@@ -168,21 +168,21 @@ var JSFaceParisLover = jsface.Class(JSFaceFrenchGuy, {
 (function () {
     // add tests
     suite
-        .add('OxygenJS', function () {
-            var p1 = new OxyPerson("John");
+        .add('OvyJS', function () {
+            var p1 = new OvyPerson("John");
             p1.setAddress("US", "MT", "CH");
 
-            var p2 = new OxyChinaGuy("Leo");
+            var p2 = new OvyChinaGuy("Leo");
             p2.setAddress("MT", "CH");
 
-            var p3 = new OxyBeijingLover("Mary");
+            var p3 = new OvyBeijingLover("Mary");
             p3.setAddress("CH");
         })
-//        .add('OxygenJS extend', function () {
-//            test_oxygen_extend();
+//        .add('OvyJS extend', function () {
+//            test_ovy_extend();
 //        })
-//        .add('OxygenJS extend(Augment style)', function() {
-//            test_oxygen_extend_augment();
+//        .add('OvyJS extend(Augment style)', function() {
+//            test_ovy_extend_augment();
 //        })
         .add('JSFace', function () {
             var p1 = new JSFacePerson("John");
