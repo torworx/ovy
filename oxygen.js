@@ -208,7 +208,7 @@
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
                 prototype = Oxy.chain(parent),
-                body = (Oxy.isFunction(data) ? data(parentClass, parent) : data) || {},
+                body = (Oxy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
                 cls;
 
             if (Oxy.isFunction(body)) {
