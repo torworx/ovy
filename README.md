@@ -1,4 +1,4 @@
-# OvyJS <sup>v0.1.3</sup>
+# OvyJS
 
 A fast, elegant, powerful, and cross platform JavaScript OOP library. Support statics, singleton, super call, private, mixins, inherits and more.
 
