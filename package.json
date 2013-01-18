@@ -1,12 +1,12 @@
 {
     "name": "ovy",
     "description": "A fast, elegant, powerful, and cross platform JavaScript OOP library. Support singleton, super call, private, mixins and more.",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "homepage": "https://github.com/torworx/ovy",
     "repository": "git://github.com/torworx/ovy.git",
     "author": "Yuan Tao <torworx@gmail.com>",
     "private": false,
-    "main": "ovy",
+    "main": "index",
     "keywords": [
         "ovy",
         "Ovy",

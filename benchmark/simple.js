@@ -1,5 +1,5 @@
 var Benchmark = require('benchmark').Benchmark;
-var Ovy = require('../ovy');
+var ovy = require('../ovy');
 var jsface = require('jsface');
 
 
@@ -7,7 +7,7 @@ var suite = new Benchmark.Suite('benchmark');
 
 
 function test_ovy() {
-    var Person = Ovy.define('Person', {
+    var Person = ovy.define('Person', {
         name: {type: String},
         email: {type: String},
         age: {type: Number},

@@ -1,12 +1,12 @@
 var Benchmark = require('benchmark').Benchmark;
-var Ovy = require('../ovy');
+var ovy = require('../ovy');
 var jsface = require('jsface');
 
 
 var suite = new Benchmark.Suite('benchmark');
 
 // OvyJS Define
-var OvyPerson = Ovy.define({
+var OvyPerson = ovy.define({
     constructor: function(name) {
         this.name = name;
     },
@@ -17,7 +17,7 @@ var OvyPerson = Ovy.define({
     }
 });
 
-var OvyChinaGuy = Ovy.define({
+var OvyChinaGuy = ovy.define({
     extend: OvyPerson,
     constructor: function(name) {
         OvyChinaGuy.$superclass.call(this, name)
@@ -27,7 +27,7 @@ var OvyChinaGuy = Ovy.define({
     }
 });
 
-var OvyBeijingLover = Ovy.define({
+var OvyBeijingLover = ovy.define({
     extend: OvyChinaGuy,
     constructor: function(name) {
         OvyBeijingLover.$superclass.call(this, name);
@@ -40,7 +40,7 @@ var OvyBeijingLover = Ovy.define({
 //
 //
 //function test_ovy_extend() {
-//    var Person = Ovy.extend(function() {
+//    var Person = ovy.extend(function() {
 //        return {
 //            constructor:function (name) {
 //                this.name = name;
@@ -53,7 +53,7 @@ var OvyBeijingLover = Ovy.define({
 //        }
 //    });
 //
-//    var ChinaGuy = Ovy.extend(Person, function(Person, parent) {
+//    var ChinaGuy = ovy.extend(Person, function(Person, parent) {
 //        return {
 //            constructor:function () {
 //                Person.call(this)
@@ -64,7 +64,7 @@ var OvyBeijingLover = Ovy.define({
 //        }
 //    });
 //
-//    var BeiJingLover = Ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
+//    var BeiJingLover = ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
 //        return {
 //            constructor:function (name) {
 //                ChinaGuy.call(this, name);
@@ -87,7 +87,7 @@ var OvyBeijingLover = Ovy.define({
 
 //
 //function test_ovy_extend_augment() {
-//    var Person = Ovy.extend(Object, function () {
+//    var Person = ovy.extend(Object, function () {
 //
 //        this.setAddress = function (country, city, street) {
 //            this.country = country;
@@ -102,7 +102,7 @@ var OvyBeijingLover = Ovy.define({
 //        }
 //    });
 //
-//    var ChinaGuy = Ovy.extend(Person, function (Person, parent) {
+//    var ChinaGuy = ovy.extend(Person, function (Person, parent) {
 //
 //        this.setAddress = function (city, street) {
 //            parent.setAddress('China', city, street);
@@ -115,7 +115,7 @@ var OvyBeijingLover = Ovy.define({
 //        }
 //    });
 //
-//    var BeiJingLover = Ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
+//    var BeiJingLover = ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
 //        this.setAddress = function (street) {
 //            parent.setAddress('BeiJing', street);
 //        }

@@ -1,9 +1,9 @@
-var Ovy = require("../ovy");
+var ovy = require("../ovy");
 
 var assert = require("assert");
 
 // Shared object
-var Person = Ovy.define({
+var Person = ovy.define({
     name: 'Mr. Unknown',
 
     constructor: function(name) { /* … */ },
@@ -13,7 +13,7 @@ var Person = Ovy.define({
 //
 
 it('define a class', function(){
-    var A = Ovy.define('A', {
+    var A = ovy.define('A', {
         f: 1,
         constructor: function () {
             this.f2 = 2;
@@ -33,7 +33,7 @@ it('define a class', function(){
 it('define with extend', function(){
 
     // OvyJS Define
-    var OvyPerson = Ovy.define({
+    var OvyPerson = ovy.define({
         constructor: function(name) {
             this.name = name;
         },
@@ -44,7 +44,7 @@ it('define with extend', function(){
         }
     });
 
-    var OvyChinaGuy = Ovy.define({
+    var OvyChinaGuy = ovy.define({
         extend: OvyPerson,
         constructor: function(name) {
             OvyChinaGuy.$superclass.call(this, name)
@@ -54,7 +54,7 @@ it('define with extend', function(){
         }
     });
 
-    var OvyBeijingLover = Ovy.define({
+    var OvyBeijingLover = ovy.define({
         extend: OvyChinaGuy,
         constructor: function(name) {
             OvyBeijingLover.$superclass.call(this, name);
@@ -93,7 +93,7 @@ it('define with extend', function(){
 });
 
 it('define with statics', function(){
-    var A = Ovy.define({
+    var A = ovy.define({
        statics: {
            f: 1,
            echo: function(msg) {
@@ -106,7 +106,7 @@ it('define with statics', function(){
 });
 
 it('define as singleton', function(){
-    var A = Ovy.define({
+    var A = ovy.define({
         singleton: true,
         f: 1
     });
@@ -114,7 +114,7 @@ it('define as singleton', function(){
 });
 
 it('define with private', function(){
-    var Person = Ovy.define((function(){
+    var Person = ovy.define((function(){
         var MIN_AGE =   1,                             // private variables
             MAX_AGE = 150;
 
@@ -136,13 +136,13 @@ it('define with private', function(){
 });
 
 it('define with mixins', function(){
-    var Options = Ovy.define({
+    var Options = ovy.define({
         setOptions: function(opts) {
             this.opts = opts;
         }
     });
 
-    var Events = Ovy.define({
+    var Events = ovy.define({
         bind: function(event, fn) {
             return true;
         },
@@ -151,13 +151,13 @@ it('define with mixins', function(){
         }
     });
 
-    var Foo = Ovy.define({
+    var Foo = ovy.define({
         constructor: function(name) {
             this.name = name;
         }
     });
 
-    var Bar = Ovy.define({
+    var Bar = ovy.define({
         extend: Foo,
         mixins: {
             options: Options,
@@ -181,13 +181,13 @@ it('define with mixins', function(){
 });
 
 it('define with inherits', function() {
-    var Options = Ovy.define({
+    var Options = ovy.define({
         setOptions: function(opts) {
             this.opts = opts;
         }
     });
 
-    var Events = Ovy.define({
+    var Events = ovy.define({
         bind: function(event, fn) {
             return true;
         },
@@ -196,13 +196,13 @@ it('define with inherits', function() {
         }
     });
 
-    var Foo = Ovy.define({
+    var Foo = ovy.define({
         constructor: function(name) {
             this.name = name;
         }
     });
 
-    var Bar = Ovy.define({
+    var Bar = ovy.define({
         extend: Foo,
         inherits: [Options, Events]
     });
@@ -217,14 +217,14 @@ it('define with inherits', function() {
     assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
 });
 
-it("mixins classes to a plain Class with Ovy.mixin", function(){
-    var Options = Ovy.define({
+it("mixins classes to a plain Class with ovy.mixin", function(){
+    var Options = ovy.define({
         setOptions: function(opts) {
             this.opts = opts;
         }
     });
 
-    var Events = Ovy.define({
+    var Events = ovy.define({
         bind: function(event, fn) {
             return true;
         },
@@ -233,13 +233,13 @@ it("mixins classes to a plain Class with Ovy.mixin", function(){
         }
     });
 
-    var Foo = Ovy.define({
+    var Foo = ovy.define({
         constructor: function(name) {
             this.name = name;
         }
     });
 
-    var Bar = Ovy.define({
+    var Bar = ovy.define({
         extend: Foo,
         setOptions: function(opts) {
             this.config = opts;
@@ -247,7 +247,7 @@ it("mixins classes to a plain Class with Ovy.mixin", function(){
         }
     });
 
-    Ovy.mixins(Bar, {
+    ovy.mixins(Bar, {
         options: Options,
         events: Events
     });
@@ -263,14 +263,14 @@ it("mixins classes to a plain Class with Ovy.mixin", function(){
 });
 
 
-it("inherits classes to a plain Class with Ovy.inherit", function(){
-    var Options = Ovy.define({
+it("inherits classes to a plain Class with ovy.inherit", function(){
+    var Options = ovy.define({
         setOptions: function(opts) {
             this.opts = opts;
         }
     });
 
-    var Events = Ovy.define({
+    var Events = ovy.define({
         bind: function(event, fn) {
             return true;
         },
@@ -279,17 +279,17 @@ it("inherits classes to a plain Class with Ovy.inherit", function(){
         }
     });
 
-    var Foo = Ovy.define({
+    var Foo = ovy.define({
         constructor: function(name) {
             this.name = name;
         }
     });
 
-    var Bar = Ovy.define({
+    var Bar = ovy.define({
         extend: Foo
     });
 
-    Ovy.inherits(Bar, [Options, Events]);
+    ovy.inherits(Bar, [Options, Events]);
 
     var bar = new Bar("Bar");
     bar.setOptions("nothing");
@@ -298,4 +298,21 @@ it("inherits classes to a plain Class with Ovy.inherit", function(){
     assert.equal(bar.opts, "nothing", "Invalid mixins behavior, constructor must be bound correctly");
     assert.ok(bar.bind(), "Invalid mixins behavior");
     assert.equal( !bar.unbind(), true, "Invalid mixins behavior");
+});
+
+it("object property", function(){
+    var Person = ovy.define({
+        addresses: null,
+        constructor: function() {
+            this.addresses = {};
+        }
+    });
+    var p1 = new Person();
+    p1.addresses['home'] = 'home'
+    assert.ok(p1.addresses['home']);
+    var p2 = new Person();
+    p2.addresses['company'] = 'company'
+    assert.notEqual(p2.addresses, p1.addresses);
+    assert.ok(!p2.addresses['home']);
+    assert.ok(p2.addresses['company']);
 });

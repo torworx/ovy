@@ -1,7 +1,7 @@
 //noinspection ThisExpressionReferencesGlobalObjectJS
 (function (context) {
 
-    var Ovy = {};
+    var ovy = {};
     (function () {
         var AUTO_ID = 1000,
             objectPrototype = Object.prototype,
@@ -14,7 +14,7 @@
             return (prefiex ? prefiex.toString() : '') + (++AUTO_ID);
         }
 
-        Ovy.apply = function (object, config, filter) {
+        ovy.apply = function (object, config, filter) {
             if (object && config && typeof config === 'object') {
                 var key;
 
@@ -27,10 +27,10 @@
             return object;
         };
 
-        Ovy.apply(Ovy, {
+        ovy.apply(ovy, {
 
             isEmpty:function (value, allowEmptyString) {
-                return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (Ovy.isArray(value) && value.length === 0);
+                return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (ovy.isArray(value) && value.length === 0);
             },
 
             isArray:('isArray' in Array) ? Array.isArray : function (value) {
@@ -73,10 +73,33 @@
 
             isDefined:function (value) {
                 return typeof value !== 'undefined';
+            },
+
+            /**
+             * Returns true if the passed value is iterable, false otherwise
+             * @param {Object} value The value to test
+             * @return {Boolean}
+             */
+            isIterable: function(value) {
+                var type = typeof value,
+                    checkLength = false;
+                if (value && type != 'string') {
+                    // Functions have a length property, so we need to filter them out
+                    if (type == 'function') {
+                        // In Safari, NodeList/HTMLCollection both return "function" when using typeof, so we need
+                        // to explicitly check them here.
+//                        if (Ext.isSafari) {
+//                            checkLength = value instanceof NodeList || value instanceof HTMLCollection;
+//                        }
+                    } else {
+                        checkLength = true;
+                    }
+                }
+                return checkLength ? value.length !== undefined : false;
             }
         });
 
-        Ovy.apply(Ovy, {
+        ovy.apply(ovy, {
 
             applyIf:function (object, config, filter) {
                 var property;
@@ -97,8 +120,8 @@
             merge:function (destination) {
                 var i = 1,
                     ln = arguments.length,
-                    mergeFn = Ovy.merge,
-                    cloneFn = Ovy.clone,
+                    mergeFn = ovy.merge,
+                    cloneFn = ovy.clone,
                     object, key, value, sourceKey;
 
                 for (; i < ln; i++) {
@@ -148,7 +171,7 @@
                     clone = [];
 
                     while (i--) {
-                        clone[i] = Ovy.clone(item[i]);
+                        clone[i] = ovy.clone(item[i]);
                     }
                 }
                 // Object
@@ -156,7 +179,7 @@
                     clone = {};
 
                     for (key in item) {
-                        clone[key] = Ovy.clone(item[key]);
+                        clone[key] = ovy.clone(item[key]);
                     }
                 }
 
@@ -171,13 +194,13 @@
             }
         });
 
-//        var ALL_RESERVED_KEYS = Ovy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
+//        var ALL_RESERVED_KEYS = ovy.merge({}, CLASS_RESERVED_KEYS, CONFIG_RESERVED_KEYS);
 
         function Base() {
         }
 
         function define(className, data) {
-            var hasClassName = Ovy.isString(className);
+            var hasClassName = ovy.isString(className);
             if (!data) data = (hasClassName ? {} : className) || {};
 
             if (className) {
@@ -188,7 +211,7 @@
 
             var _extend = data.extend,
                 Parent;
-            if (_extend && !Ovy.isObject(_extend)) {
+            if (_extend && !ovy.isObject(_extend)) {
                 Parent = _extend;
             } else {
                 Parent = Base;
@@ -208,11 +231,11 @@
 
         function extend(parentClass, data) {
             var parent = parentClass.prototype,
-                prototype = Ovy.chain(parent),
-                body = (Ovy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
+                prototype = ovy.chain(parent),
+                body = (ovy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
                 cls;
 
-            if (Ovy.isFunction(body)) {
+            if (ovy.isFunction(body)) {
                 cls = body;
             } else if (body.constructor !== Object) {
                 cls = body.constructor;
@@ -247,7 +270,7 @@
 
             if (statics) {
                 // copy static properties from statics to class
-                Ovy.apply(targetClass, statics);
+                ovy.apply(targetClass, statics);
             }
             if (mixins) {
                 processMixins(targetClass, mixins, targetPrototype)
@@ -256,7 +279,7 @@
                 processInherits(targetClass, inherits, targetPrototype);
             }
 
-            Ovy.apply(prototype, data, CONFIG_RESERVED_KEYS);
+            ovy.apply(prototype, data, CONFIG_RESERVED_KEYS);
 
             if (data.toString !== Object.prototype.toString) {
                 prototype.toString = data.toString;
@@ -319,7 +342,7 @@
             if (name) {
                 if (!prototype.hasOwnProperty('mixins')) {
                     if ('mixins' in prototype) {
-                        prototype.mixins = Ovy.chain(prototype.mixins);
+                        prototype.mixins = ovy.chain(prototype.mixins);
                     }
                     else {
                         prototype.mixins = {};
@@ -329,7 +352,7 @@
 
             for (key in mixin) {
                 if (name && (key === 'mixins')) {
-                    Ovy.merge(prototype.mixins, mixin[key]);
+                    ovy.merge(prototype.mixins, mixin[key]);
                 }
                 else if (typeof prototype[key] == 'undefined' && key != 'mixinId') {
                     prototype[key] = mixin[key];
@@ -341,7 +364,7 @@
         }
 
         // expose oop functions
-        Ovy.apply(Ovy, {
+        ovy.apply(ovy, {
             define:define,
             extend:extend,
             mixins:function(targetClass, mixins) {
@@ -355,15 +378,19 @@
     }());
 
     if (typeof module !== "undefined" && module.exports) {              // NodeJS/CommonJS
-        module.exports = Ovy;
+        module.exports = ovy;
     } else {
-        var _Ovy = context.Ovy;                                         // save current Class namespace
-        context.Ovy = Ovy;                                              // bind Class and Ovy to global scope
-        Ovy.noConflict = function () {
-            if (context.Ovy === Ovy) {
+        var _ovy = context.ovy,
+            _Ovy = context.Ovy;
+        context.Ovy = context.ovy = ovy;
+        ovy.noConflict = function () {
+            if (context.ovy === ovy) {
+                context.ovy = _ovy;
+            }
+            if (context.Ovy === ovy) {
                 context.Ovy = _Ovy;
             }
-            return Ovy;
+            return ovy;
         }
     }
 

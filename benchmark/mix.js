@@ -1,4 +1,4 @@
-var Ovy = require('../ovy');
+var ovy = require('../ovy');
 var jsface = require('jsface');
 require('./lib/augment');
 
@@ -9,20 +9,20 @@ var Person = function(name) {
     this.name = name;
 };
 
-// Ovy Inherits Define
-var OvyInheritsCanSing = Ovy.define({
+// ovy Inherits Define
+var OvyInheritsCanSing = ovy.define({
     sing: function(songName) {
         //
     }
 });
 
-var OvyInheritsCanPlayGuitar = Ovy.define({
+var OvyInheritsCanPlayGuitar = ovy.define({
     playGuitar: function() {
         //
     }
 });
 
-var OvyInheritsCoolGuy = Ovy.define({
+var OvyInheritsCoolGuy = ovy.define({
     extend: Person,
     inherits: [OvyInheritsCanSing, OvyInheritsCanPlayGuitar],
     // make sure different method name
@@ -32,20 +32,20 @@ var OvyInheritsCoolGuy = Ovy.define({
     }
 });
 
-// Ovy Mixins Define
-var OvyMixinsCanSing = Ovy.define({
+// ovy Mixins Define
+var OvyMixinsCanSing = ovy.define({
     sing: function(songName) {
         //
     }
 });
 
-var OvyMixinsCanPlayGuitar = Ovy.define({
+var OvyMixinsCanPlayGuitar = ovy.define({
     playGuitar: function() {
         //
     }
 });
 
-var OvyMixinsCoolGuy = Ovy.define({
+var OvyMixinsCoolGuy = ovy.define({
     extend: Person,
     mixins: {
         canSing: OvyMixinsCanSing,
