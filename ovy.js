@@ -6,9 +6,10 @@
         var AUTO_ID = 1000,
             objectPrototype = Object.prototype,
             toString = objectPrototype.toString,
-            CLASS_RESERVED_KEYS = {$classname:1, mixinId:1, $mixinId:1, $super:1, $superclass:1},
-            CONFIG_RESERVED_KEYS = {extend:1, constructor:1, singleton:1, statics:1, mixins:1, inherits:1},
-            TemplateClass = function(){};
+            // CLASS_RESERVED_KEYS = {$classname: 1, mixinId: 1, $mixinId: 1, $super: 1, $superclass: 1},
+            CONFIG_RESERVED_KEYS = {extend: 1, constructor: 1, singleton: 1, statics: 1, mixins: 1, inherits: 1},
+            TemplateClass = function () {
+            };
 
         function getAutoId(prefiex) {
             return (prefiex ? prefiex.toString() : '') + (++AUTO_ID);
@@ -29,49 +30,49 @@
 
         ovy.apply(ovy, {
 
-            isEmpty:function (value, allowEmptyString) {
+            isEmpty: function (value, allowEmptyString) {
                 return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (ovy.isArray(value) && value.length === 0);
             },
 
-            isArray:('isArray' in Array) ? Array.isArray : function (value) {
+            isArray: ('isArray' in Array) ? Array.isArray : function (value) {
                 return toString.call(value) === '[object Array]';
             },
 
-            isFunction:function (value) {
+            isFunction: function (value) {
                 return value && typeof value === 'function';
             },
 
-            isObject:function (value) {
+            isObject: function (value) {
                 return value && typeof value === 'object';
             },
 
-            isSimpleObject:function (value) {
+            isSimpleObject: function (value) {
                 return value instanceof Object && value.constructor === Object;
             },
 
-            isPrimitive:function (value) {
+            isPrimitive: function (value) {
                 var type = typeof value;
 
                 return type === 'string' || type === 'number' || type === 'boolean';
             },
 
-            isNumber:function (value) {
+            isNumber: function (value) {
                 return typeof value === 'number' && isFinite(value);
             },
 
-            isNumeric:function (value) {
+            isNumeric: function (value) {
                 return !isNaN(parseFloat(value)) && isFinite(value);
             },
 
-            isString:function (value) {
+            isString: function (value) {
                 return typeof value === 'string';
             },
 
-            isBoolean:function (value) {
+            isBoolean: function (value) {
                 return typeof value === 'boolean';
             },
 
-            isDefined:function (value) {
+            isDefined: function (value) {
                 return typeof value !== 'undefined';
             },
 
@@ -80,7 +81,7 @@
              * @param {Object} value The value to test
              * @return {Boolean}
              */
-            isIterable: function(value) {
+            isIterable: function (value) {
                 var type = typeof value,
                     checkLength = false;
                 if (value && type != 'string') {
@@ -101,7 +102,7 @@
 
         ovy.apply(ovy, {
 
-            applyIf:function (object, config, filter) {
+            applyIf: function (object, config, filter) {
                 var property;
 
                 if (object) {
@@ -117,7 +118,7 @@
                 return object;
             },
 
-            merge:function (destination) {
+            merge: function (destination) {
                 var i = 1,
                     ln = arguments.length,
                     mergeFn = ovy.merge,
@@ -147,7 +148,7 @@
                 return destination;
             },
 
-            clone:function (item) {
+            clone: function (item) {
                 var type,
                     i,
                     clone,
@@ -221,12 +222,10 @@
 
         function makeCtor(parent) {
             if (parent.constructor === Object) {
-                return function(){};
+                return function () {
+                };
             } else {
                 return optimizeConstructor(parent.constructor);
-//                return function() {
-//                    parent.constructor.apply(this, arguments);
-//                }
             }
         }
 
@@ -234,22 +233,34 @@
             var newConstructor;
             switch (cons.length) {
                 case 0:
-                    newConstructor = function () { cons.call(this); };
+                    newConstructor = function () {
+                        cons.call(this);
+                    };
                     break;
                 case 1:
-                    newConstructor = function (a) { cons.call(this, a); };
+                    newConstructor = function (a) {
+                        cons.call(this, a);
+                    };
                     break;
                 case 2:
-                    newConstructor = function (a, b) { cons.call(this, a, b); };
+                    newConstructor = function (a, b) {
+                        cons.call(this, a, b);
+                    };
                     break;
                 case 3:
-                    newConstructor = function (a, b, c) { cons.call(this, a, b, c); };
+                    newConstructor = function (a, b, c) {
+                        cons.call(this, a, b, c);
+                    };
                     break;
                 case 4:
-                    newConstructor = function (a, b, c, d) { cons.call(this, a, b, c, d); };
+                    newConstructor = function (a, b, c, d) {
+                        cons.call(this, a, b, c, d);
+                    };
                     break;
                 default:
-                    newConstructor = function () { cons.apply(this, arguments); };
+                    newConstructor = function () {
+                        cons.apply(this, arguments);
+                    };
             }
             return newConstructor;
         }
@@ -294,8 +305,7 @@
             var prototype = targetPrototype || targetClass.prototype,
                 statics = data.statics,
                 mixins = data.mixins,
-                inherits = data.inherits,
-                key;
+                inherits = data.inherits;
 
             if (statics) {
                 // copy static properties from statics to class
@@ -393,17 +403,14 @@
         }
 
         // expose oop functions
-        ovy.apply(ovy, {
-            define:define,
-            extend:extend,
-            mixins:function(targetClass, mixins) {
-                return processMixins(targetClass, mixins);
-            },
-            inherits:function(targetClass, inherits) {
-                return processInherits(targetClass, inherits);
-            }
-        })
-
+        ovy.define = define;
+        ovy.extend = extend;
+        ovy.mixins = function (targetClass, mixins) {
+            return processMixins(targetClass, mixins);
+        };
+        ovy.inherits = function (targetClass, inherits) {
+            return processInherits(targetClass, inherits);
+        };
     }());
 
     if (typeof module !== "undefined" && module.exports) {              // NodeJS/CommonJS

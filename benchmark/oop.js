@@ -1,6 +1,7 @@
 var Benchmark = require('benchmark').Benchmark;
 var ovy = require('../ovy');
 var jsface = require('jsface');
+var util = require('util');
 
 process._dejavu = {
     rc: {
@@ -12,7 +13,38 @@ var dejavu = require('dejavu');
 
 var suite = new Benchmark.Suite('benchmark');
 
-// OvyJS Define
+// util.inherit
+var Person = function(name) {
+    this.name = name;
+}
+
+Person.prototype.setAddress = function(country, city, street) {
+    this.country = country;
+    this.city = city;
+    this.street = street;
+}
+
+var ChinaGuy = function(name) {
+    Person.call(this, name);
+}
+
+util.inherits(ChinaGuy, Person);
+
+ChinaGuy.prototype.setAddress = function(city, street) {
+    Person.prototype.setAddress.call(this, "China", city, street);
+}
+
+BeijingLover = function(name) {
+    ChinaGuy.call(this, name);
+}
+
+util.inherits(BeijingLover, ChinaGuy);
+
+BeijingLover.prototype.setAddress = function(street) {
+    ChinaGuy.prototype.setAddress.call(this, "Beijing", street);
+}
+
+// ovy
 var OvyPerson = ovy.define({
     constructor: function(name) {
         this.name = name;
@@ -38,7 +70,8 @@ var OvyBeijingLover = ovy.define({
     }
 });
 
-var OvyPerson2 = ovy.extend(function() {
+// ovy closure
+var OvyPerson3 = ovy.extend(function() {
     return {
         constructor:function (name) {
             this.name = name;
@@ -51,7 +84,7 @@ var OvyPerson2 = ovy.extend(function() {
     }
 });
 
-var OvyChinaGuy2 = ovy.extend(OvyPerson2, function($super) {
+var OvyChinaGuy3 = ovy.extend(OvyPerson3, function($super) {
     return {
         setAddress:function (city, street) {
             $super.setAddress('China', city, street);
@@ -59,110 +92,13 @@ var OvyChinaGuy2 = ovy.extend(OvyPerson2, function($super) {
     }
 });
 
-var OvyBeijingLover2 = ovy.extend(OvyChinaGuy2, function ($super) {
+var OvyBeijingLover3 = ovy.extend(OvyChinaGuy3, function ($super) {
     return {
         setAddress:function (street) {
             $super.setAddress('Beijing', street);
         }
     }
 });
-
-//function test_ovy_extend() {
-//    var Person = ovy.extend(function() {
-//        return {
-//            constructor:function (name) {
-//                this.name = name;
-//            },
-//            setAddress:function (country, city, street) {
-//                this.country = country;
-//                this.city = city;
-//                this.street = street;
-//            }
-//        }
-//    });
-//
-//    var ChinaGuy = ovy.extend(Person, function(Person, parent) {
-//        return {
-//            constructor:function () {
-//                Person.call(this)
-//            },
-//            setAddress:function (city, street) {
-//                parent.setAddress('China', city, street);
-//            }
-//        }
-//    });
-//
-//    var BeijingLover = ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
-//        return {
-//            constructor:function (name) {
-//                ChinaGuy.call(this, name);
-//            },
-//            setAddress:function (street) {
-//                parent.setAddress('Beijing', street);
-//            }
-//        }
-//    });
-//
-//    var p1 = new Person("John");
-//    p1.setAddress("US", "MT", "CH");
-//
-//    var p2 = new ChinaGuy("Leo");
-//    p2.setAddress("MT", "CH");
-//
-//    var p3 = new BeijingLover("Mary");
-//    p3.setAddress("CH");
-//}
-
-//
-//function test_ovy_extend_augment() {
-//    var Person = ovy.extend(Object, function () {
-//
-//        this.setAddress = function (country, city, street) {
-//            this.country = country;
-//            this.city = city;
-//            this.street = street;
-//        }
-//
-//        return Person;
-//
-//        function Person(name) {
-//            this.name = name;
-//        }
-//    });
-//
-//    var ChinaGuy = ovy.extend(Person, function (Person, parent) {
-//
-//        this.setAddress = function (city, street) {
-//            parent.setAddress('China', city, street);
-//        }
-//
-//        return ChinaGuy;
-//
-//        function ChinaGuy() {
-//            Person.call(this)
-//        }
-//    });
-//
-//    var BeijingLover = ovy.extend(ChinaGuy, function (ChinaGuy, parent) {
-//        this.setAddress = function (street) {
-//            parent.setAddress('Beijing', street);
-//        }
-//        return BeijingLover;
-//
-//        function BeijingLover(name) {
-//            ChinaGuy.call(this, name);
-//        }
-//    });
-//
-//    var p1 = new Person("John");
-//    p1.setAddress("US", "MT", "CH");
-//
-//    var p2 = new ChinaGuy("Leo");
-//    p2.setAddress("MT", "CH");
-//
-//    var p3 = new BeijingLover("Mary");
-//    p3.setAddress("CH");
-//}
 
 // JSFace
 var JSFacePerson = jsface.Class({
@@ -289,31 +225,26 @@ var dejavuClassParisLover3 = dejavuClassFrenchGuy3.extend(function ($super) {
 (function () {
     // add tests
     suite
-        .add('ovy', function () {
-            var p3 = new OvyBeijingLover("Mary");
-            p3.setAddress("CH");
-        })
-        .add('ovy closure', function () {
-            var p = new OvyBeijingLover2("Mary");
+        .add('util.inherit', function () {
+            var p = new BeijingLover("Mary");
             p.setAddress("CH");
         })
-//        .add('OvyJS extend(Augment style)', function() {
-//            test_ovy_extend_augment();
-//        })
+        .add('ovy', function () {
+            var p = new OvyBeijingLover("Mary");
+            p.setAddress("CH");
+        })
+        .add('ovy closure', function () {
+            var p = new OvyBeijingLover3("Mary");
+            p.setAddress("CH");
+        })
         .add('JSFace', function () {
-//            var p1 = new JSFacePerson("John");
-//            p1.setAddress("US", "MT", "CH");
-//
-//            var p2 = new JSFaceFrenchGuy("Leo");
-//            p2.setAddress("MT", "CH");
-
-            var p3 = new JSFaceParisLover("Mary");
-            p3.setAddress("CH");
+            var p = new JSFaceParisLover("Mary");
+            p.setAddress("CH");
         })
 
         .add('dejavu', function() {
-            var p33 = new dejavuClassParisLover("Mary");
-            p33.setAddress("CH");
+            var p = new dejavuClassParisLover("Mary");
+            p.setAddress("CH");
         })
 
 //        .add('dejavu optimized', function() {
@@ -322,8 +253,8 @@ var dejavuClassParisLover3 = dejavuClassFrenchGuy3.extend(function ($super) {
 //        })
 
         .add('dejavu optimized closures', function() {
-            var p39 = new dejavuClassParisLover3("Mary");
-            p39.setAddress("CH");
+            var p = new dejavuClassParisLover3("Mary");
+            p.setAddress("CH");
         })
 
         // add listeners

@@ -386,4 +386,4 @@ it("ovy closure", function() {
     assert.equal(p.country, "China");
     assert.equal(p.city, "Beijing");
     assert.equal(p.street, "CH");
-})
+});
