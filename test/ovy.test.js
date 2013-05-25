@@ -316,3 +316,74 @@ it("object property", function(){
     assert.ok(!p2.addresses['home']);
     assert.ok(p2.addresses['company']);
 });
+
+it("define extend from plain function", function() {
+    function Person(name) {
+        this.name = name;
+    }
+
+    var BeijingPerson = ovy.define({
+        extend: Person,
+        constructor: function() {
+            BeijingPerson.$superclass.call(this, 'Beijing');
+        }
+    });
+
+    assert.equal((new BeijingPerson).name, 'Beijing');
+});
+
+it("define subclass without constructor", function() {
+    function Person(name) {
+        this.name = name;
+    }
+
+    var BeijingPerson = ovy.define({
+        extend: Person,
+        setName: function(name) {
+            this.name = name;
+        }
+    });
+
+    assert.equal((new BeijingPerson('Beijing')).name, 'Beijing');
+});
+
+it("ovy closure", function() {
+
+    var OvyPerson2 = ovy.extend(function() {
+
+        return {
+            constructor:function (name) {
+                this.name = name;
+            },
+            setAddress:function (country, city, street) {
+                this.country = country;
+                this.city = city;
+                this.street = street;
+            }
+        }
+    });
+
+    var OvyChinaGuy2 = ovy.extend(OvyPerson2, function($super) {
+        return {
+            setAddress:function (city, street) {
+                $super.setAddress('China', city, street);
+            }
+        }
+    });
+
+    var OvyBeijingLover2 = ovy.extend(OvyChinaGuy2, function ($super) {
+        return {
+            setAddress:function (street) {
+                $super.setAddress('Beijing', street);
+            }
+        }
+    });
+
+    var p = new OvyBeijingLover2("Mary");
+    p.setAddress("CH");
+
+    assert.equal(p.name, "Mary");
+    assert.equal(p.country, "China");
+    assert.equal(p.city, "Beijing");
+    assert.equal(p.street, "CH");
+})

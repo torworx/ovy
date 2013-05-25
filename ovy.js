@@ -223,16 +223,45 @@
             if (parent.constructor === Object) {
                 return function(){};
             } else {
-                return function() {
-                    parent.constructor.apply(this, arguments);
-                }
+                return optimizeConstructor(parent.constructor);
+//                return function() {
+//                    parent.constructor.apply(this, arguments);
+//                }
             }
         }
 
+        function optimizeConstructor(cons) {
+            var newConstructor;
+            switch (cons.length) {
+                case 0:
+                    newConstructor = function () { cons.call(this); };
+                    break;
+                case 1:
+                    newConstructor = function (a) { cons.call(this, a); };
+                    break;
+                case 2:
+                    newConstructor = function (a, b) { cons.call(this, a, b); };
+                    break;
+                case 3:
+                    newConstructor = function (a, b, c) { cons.call(this, a, b, c); };
+                    break;
+                case 4:
+                    newConstructor = function (a, b, c, d) { cons.call(this, a, b, c, d); };
+                    break;
+                default:
+                    newConstructor = function () { cons.apply(this, arguments); };
+            }
+            return newConstructor;
+        }
+
         function extend(parentClass, data) {
+            if (!data) {
+                data = parentClass;
+                parentClass = Base;
+            }
             var parent = parentClass.prototype,
                 prototype = ovy.chain(parent),
-                body = (ovy.isFunction(data) ? data.call(prototype, parentClass, parent) : data) || {},
+                body = (ovy.isFunction(data) ? data.call(prototype, parent, parentClass) : data) || {},
                 cls;
 
             if (ovy.isFunction(body)) {
