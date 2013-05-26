@@ -1,5 +1,5 @@
 //noinspection ThisExpressionReferencesGlobalObjectJS
-(function (context) {
+(function (ctx) {
 
     var ovy = {};
     (function () {
@@ -225,45 +225,46 @@
                 return function () {
                 };
             } else {
-                return optimizeConstructor(parent.constructor);
+                return ofwrap(parent.constructor);
             }
         }
 
-        function optimizeConstructor(cons) {
-            var newConstructor;
-            switch (cons.length) {
-                case 0:
-                    newConstructor = function () {
-                        cons.call(this);
-                    };
-                    break;
-                case 1:
-                    newConstructor = function (a) {
-                        cons.call(this, a);
-                    };
-                    break;
-                case 2:
-                    newConstructor = function (a, b) {
-                        cons.call(this, a, b);
-                    };
-                    break;
-                case 3:
-                    newConstructor = function (a, b, c) {
-                        cons.call(this, a, b, c);
-                    };
-                    break;
-                case 4:
-                    newConstructor = function (a, b, c, d) {
-                        cons.call(this, a, b, c, d);
-                    };
-                    break;
-                default:
-                    newConstructor = function () {
-                        cons.apply(this, arguments);
-                    };
-            }
-            return newConstructor;
-        }
+		function ofwrap(fn, argsize) {
+		    argsize = argsize ? Math.max(argsize, fn.length) : fn.length;
+		    var wrapper;
+		    switch (argsize) {
+		        case 0:
+		            wrapper = function () { fn.call(this); };
+		            break;
+		        case 1:
+		            wrapper = function (a) { fn.call(this, a); };
+		            break;
+		        case 2:
+		            wrapper = function (a1, a2) { fn.call(this, a1, a2); };
+		            break;
+		        case 3:
+		            wrapper = function (a1, a2, a3) { fn.call(this, a1, a2, a3); };
+		            break;
+		        case 4:
+		            wrapper = function (a1, a2, a3, a4) { fn.call(this, a1, a2, a3, a4); };
+		            break;
+		        case 5:
+		            wrapper = function (a1, a2, a3, a4, a5) { fn.call(this, a1, a2, a3, a4, a5); };
+		            break;
+		        case 6:
+		            wrapper = function (a1, a2, a3, a4, a5, a6) { fn.call(this, a1, a2, a3, a4, a5, a6); };
+		            break;
+		        case 7:
+		            wrapper = function (a1, a2, a3, a4, a5, a6, a7) { fn.call(this, a1, a2, a3, a4, a5, a6, a7); };
+		            break;
+		        case 8:
+		            wrapper = function (a1, a2, a3, a4, a5, a6, a7, a8) { fn.call(this, a1, a2, a3, a4, a5, a6, a7, a8); };
+		            break;
+		        default:
+		            wrapper = function () { fn.apply(this, arguments); };
+		    }
+		    return wrapper;
+		}
 
         function extend(parentClass, data) {
             if (!data) {
@@ -416,15 +417,15 @@
     if (typeof module !== "undefined" && module.exports) {              // NodeJS/CommonJS
         module.exports = ovy;
     } else {
-        var _ovy = context.ovy,
-            _Ovy = context.Ovy;
-        context.Ovy = context.ovy = ovy;
+        var _ovy = ctx.ovy,
+            _Ovy = ctx.Ovy;
+        ctx.Ovy = ctx.ovy = ovy;
         ovy.noConflict = function () {
-            if (context.ovy === ovy) {
-                context.ovy = _ovy;
+            if (ctx.ovy === ovy) {
+                ctx.ovy = _ovy;
             }
-            if (context.Ovy === ovy) {
-                context.Ovy = _Ovy;
+            if (ctx.Ovy === ovy) {
+                ctx.Ovy = _Ovy;
             }
             return ovy;
         }
