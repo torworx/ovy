@@ -362,7 +362,7 @@
                         name = item.$mixinId = getAutoId('mixin_');
                     }
 
-                    mixin(targetClass, name, mixin, targetPrototype);
+                    mixin(targetClass, name, item, targetPrototype);
                 }
             }
             else {
